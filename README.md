@@ -9,7 +9,7 @@ Build the project
 Run the project
 ------------------
 
-java -jar MockService.xxx.jar
+- `java -jar MockService.xxx.jar`
 
 
 
