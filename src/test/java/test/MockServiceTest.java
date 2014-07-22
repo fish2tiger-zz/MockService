@@ -2,9 +2,12 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.Map;
+
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpExchange;
+import org.eclipse.jetty.io.ByteArrayBuffer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,25 +29,29 @@ public class MockServiceTest{
 	private String host = "127.0.0.1";
 	private int port = 8080;
 	private HttpClient httpClient = new HttpClient();
+	Map<String,String> files = MockServerSimple.loadResource();
 	@Before
 	public void startServer(){
-		System.out.println("hello");
 		mockServer = startClientAndServer(port);
-		System.out.println("hello");
 		MockServerSimple.configserver();
+		System.out.println("bofore");
+		try{
+			httpClient.start();
+		}
+		catch(Exception e){
+			System.out.println("error creating httpclient");
+		}
 	}
 	@Test
 	public void isStage1(){
 		try{
-			
 			ContentExchange contentExchange = new ContentExchange(true);
-	        contentExchange.setMethod("GET");
+	        contentExchange.setMethod("POST");
 	        contentExchange.setURL("http://localhost" + ":" + port + "/orders/123");
 	        httpClient.send(contentExchange);
 	        if (contentExchange.waitForDone() == HttpExchange.STATUS_COMPLETED) {
-	        	System.out.println(contentExchange.getResponseContent());
-                assertEquals("", "");
-                System.out.println("after");
+	        	String res = contentExchange.getResponseContent();
+                assertEquals(files.get("order-1.json"), res);
             }
 	        else {
                 throw new RuntimeException("Exception making request to retrieve all books");
@@ -53,17 +60,33 @@ public class MockServiceTest{
 		catch(Exception e){
 			System.out.println("exception in processing the request.");
 		}
-		 
-	}
-	@Test
-	public void isStage2(){
 		try{
 			ContentExchange contentExchange = new ContentExchange(true);
-	        contentExchange.setMethod("GET");
+	        contentExchange.setMethod("POST");
 	        contentExchange.setURL("http://localhost" + ":" + port + "/orders/123");
+	        contentExchange.setRequestContentType("application/json; charset=UTF-8");;
+	        contentExchange.setRequestContent(new ByteArrayBuffer(files.get("login.json")));
+	        httpClient.send(contentExchange);
+	        ;
+	        if (contentExchange.waitForDone() == HttpExchange.STATUS_COMPLETED) {
+	        	String res = contentExchange.getResponseContent();
+                assertEquals(files.get("order-2.json"), res);
+            } else {
+                throw new RuntimeException("Exception making request to retrieve all books");
+            }
+		}
+		catch(Exception e){
+			System.out.println("exception in processing the request.");
+		}
+		try{
+			ContentExchange contentExchange = new ContentExchange(true);
+	        contentExchange.setMethod("POST");
+	        contentExchange.setURL("http://localhost" + ":" + port + "/orders/123");
+	        httpClient.start();
 	        httpClient.send(contentExchange);
 	        if (contentExchange.waitForDone() == HttpExchange.STATUS_COMPLETED) {
-                assertEquals(contentExchange.getResponseContent(), "");
+	        	String res = contentExchange.getResponseContent();
+	        	assertEquals(files.get("order-3.json"), res);
             } else {
                 throw new RuntimeException("Exception making request to retrieve all books");
             }
@@ -72,26 +95,11 @@ public class MockServiceTest{
 			System.out.println("exception in processing the request.");
 		}
 	}
-	@Test
-	public void isStage3(){
-		try{
-			ContentExchange contentExchange = new ContentExchange(true);
-	        contentExchange.setMethod("GET");
-	        contentExchange.setURL("http://localhost" + ":" + port + "/orders/123");
-	        httpClient.send(contentExchange);
-	        if (contentExchange.waitForDone() == HttpExchange.STATUS_COMPLETED) {
-                assertEquals(contentExchange.getResponseContent(), "");
-            } else {
-                throw new RuntimeException("Exception making request to retrieve all books");
-            }
-		}
-		catch(Exception e){
-			System.out.println("exception in processing the request.");
-		}
-	}
+	
 	@After
 	public void stopServer(){
 		mockServer.stop();
+		System.out.println("after");
 	}
 
 }
