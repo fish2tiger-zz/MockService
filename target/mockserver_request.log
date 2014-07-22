@@ -1,0 +1,79 @@
+2014-07-22 15:15:50,489 {
+  "httpRequest" : {
+    "method" : "POST",
+    "path" : "/orders/",
+    "body" : {
+      "type" : "EXACT",
+      "value" : "{\"user-name\":\"foo\",\t\"password\":\"bar\"}"
+    }
+  },
+  "httpResponse" : {
+    "statusCode" : 200,
+    "body" : "{
+    "order-id":122,
+    "status":"initializing..."
+}",
+    "headers" : [ {
+      "name" : "Content-Type",
+      "values" : [ "application/json; charset=utf-8" ]
+    } ],
+    "delay" : {
+      "timeUnit" : "SECONDS",
+      "value" : 1
+    }
+  },
+  "times" : {
+    "remainingTimes" : 1,
+    "unlimited" : false
+  }
+}
+2014-07-22 15:15:50,491 {
+  "httpRequest" : {
+    "method" : "GET",
+    "path" : "/orders/[0-9]*"
+  },
+  "httpResponse" : {
+    "statusCode" : 200,
+    "body" : "{
+    "order-id":122,
+    "status":"initializing..."
+}",
+    "headers" : [ {
+      "name" : "Content-type",
+      "values" : [ "application/json;charset=utf-8" ]
+    } ],
+    "delay" : {
+      "timeUnit" : "SECONDS",
+      "value" : 5
+    }
+  },
+  "times" : {
+    "remainingTimes" : 2,
+    "unlimited" : false
+  }
+}
+2014-07-22 15:15:50,492 {
+  "httpRequest" : {
+    "method" : "GET",
+    "path" : "/orders/[0-9]*"
+  },
+  "httpResponse" : {
+    "statusCode" : 200,
+    "body" : "{
+    "order-id":122,
+    "status":"ready!"
+}",
+    "headers" : [ {
+      "name" : "Content-type",
+      "values" : [ "application/json;charset=utf-8" ]
+    } ],
+    "delay" : {
+      "timeUnit" : "SECONDS",
+      "value" : 5
+    }
+  },
+  "times" : {
+    "remainingTimes" : 2,
+    "unlimited" : false
+  }
+}
