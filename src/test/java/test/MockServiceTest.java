@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.eclipse.jetty.client.ContentExchange;
@@ -29,10 +30,11 @@ public class MockServiceTest{
 	private String host = "127.0.0.1";
 	private int port = 8080;
 	private HttpClient httpClient = new HttpClient();
-	Map<String,String> files = MockServerSimple.loadResource();
+	Map<String,String> files;
 	@Before
-	public void startServer(){
+	public void startServer() throws IOException{
 		mockServer = startClientAndServer(port);
+		files = MockServerSimple.loadResource();
 		MockServerSimple.configserver();
 		System.out.println("bofore");
 		try{
